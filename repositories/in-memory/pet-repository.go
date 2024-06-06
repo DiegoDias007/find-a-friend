@@ -1,6 +1,7 @@
 package inMemory
 
 import (
+	"context"
 	"find-a-friend/types"
 	"find-a-friend/utils"
 )
@@ -13,7 +14,7 @@ func NewPetRepository() *PetRepository {
 	return &PetRepository{}
 }
 
-func (r *PetRepository) Create(pet types.CreatePet) (types.Pet, error) {
+func (r *PetRepository) Create(ctx context.Context,pet types.CreatePet) (types.Pet, error) {
 	id := utils.GenerateRandomNumber(1000)
 
 	newPet := types.Pet{
@@ -32,7 +33,7 @@ func (r *PetRepository) Create(pet types.CreatePet) (types.Pet, error) {
 	return newPet, nil
 }
 
-func (r *PetRepository) GetFromCity(city string) ([]types.Pet, error) {
+func (r *PetRepository) GetFromCity(ctx context.Context, city string) ([]types.Pet, error) {
 	var pets []types.Pet
 	for _, pet := range r.pets {
 		if pet.City == city {
