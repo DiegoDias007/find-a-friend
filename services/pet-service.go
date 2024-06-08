@@ -9,15 +9,19 @@ import (
 
 type PetService struct {
 	petRepo repositories.PetRepository
+	orgRepo repositories.OrgRepository
 }
 
-func NewPetService(repo repositories.PetRepository) (*PetService) {
-	return &PetService{petRepo: repo}
+func NewPetService(repo repositories.PetRepository, orgRepo repositories.OrgRepository) (*PetService) {
+	return &PetService{petRepo: repo, orgRepo: orgRepo}
 }
 
 func (s *PetService) Create(ctx context.Context, pet types.CreatePet) (types.Pet, error) {
-	// todo: check if org id is valid -> create org
-	// test creating a pet with an invalid org id
+	_, err := s.orgRepo.GetById(ctx, pet.OrgId)
+	if err != nil {
+		return types.Pet{}, err
+	}
+
 	newPet, err := s.petRepo.Create(ctx, pet)
 	if err != nil {
 		return types.Pet{}, fmt.Errorf("error when creating a new pet: %v", err)

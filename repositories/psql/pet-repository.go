@@ -30,7 +30,7 @@ func (r *PetRepository) Create(ctx context.Context, pet types.CreatePet) (types.
 	err := r.db.QueryRow(ctx, query, pet.Name, pet.City, pet.Species, pet.Breed, pet.Height, pet.Weight, pet.OrgId).
 		Scan(&createdPet.Id, &createdPet.Name, &createdPet.City, &createdPet.Species, &createdPet.Breed, &createdPet.Height, &createdPet.Weight, &createdPet.OrgId)
 	if err != nil {
-		return types.Pet{}, fmt.Errorf("error creating pet: %w", err)
+		return types.Pet{}, fmt.Errorf("error creating pet: %v", err)
 	}
 
 	return createdPet, nil

@@ -1,10 +1,9 @@
 package services
 
 import (
-	"find-a-friend/repositories/in-memory"
+	"find-a-friend/repositories"
 )
 
-func CreatePetService() *PetService {
-	petRepo := inMemory.NewPetRepository()
-	return NewPetService(petRepo)
+func CreatePetService(petRepo repositories.PetRepository, orgRepo repositories.OrgRepository) *PetService {
+	return NewPetService(petRepo, orgRepo)
 }
