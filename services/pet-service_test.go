@@ -14,7 +14,7 @@ func TestCreatePet(t *testing.T) {
 	orgRepo := inMemory.NewOrgRepository()
 	petRepo := inMemory.NewPetRepository()
 	petService := CreatePetService(petRepo, orgRepo)
-	
+
 	ctx := context.Background()
 
 	org := types.CreateOrg{
@@ -23,7 +23,6 @@ func TestCreatePet(t *testing.T) {
 		Whatsapp: "94832-1283",
 		Password: "Random Password",
 	}
-
 
 	createdOrg, err := petService.orgRepo.Create(ctx, org)
 
@@ -41,7 +40,6 @@ func TestCreatePet(t *testing.T) {
 	require.NoError(t, err, "error when creating pet.")
 	assert.Equal(t, "Milla", pet.Name, "they should be equal.")
 }
-
 
 func TestCreatePetWithInvalidOrgId(t *testing.T) {
 	orgRepo := inMemory.NewOrgRepository()
@@ -61,5 +59,40 @@ func TestCreatePetWithInvalidOrgId(t *testing.T) {
 	}
 
 	_, err := petService.Create(ctx, pet)
-	require.Error(t, err, "expected an error when of invalid org id when creating pet.")
+	require.Error(t, err, "expected an error of invalid org id when creating pet.")
+}
+
+func TestGetPetsFromCity(t *testing.T) {
+	orgRepo := inMemory.NewOrgRepository()
+	petRepo := inMemory.NewPetRepository()
+	petService := CreatePetService(petRepo, orgRepo)
+
+	ctx := context.Background()
+
+	pet := types.CreatePet{
+		Name:    "Milla",
+		City:    "João Pessoa",
+		Species: "Dog",
+		Breed:   "Shitzu",
+		Height:  0.3,
+		Weight:  7.3,
+		OrgId:   2,
+	}
+
+	mockPet := types.CreatePet{
+		Name:    "Milla",
+		City:    "Recife",
+		Species: "Dog",
+		Breed:   "Shitzu",
+		Height:  0.3,
+		Weight:  7.3,
+		OrgId:   2,
+	}
+
+	_, err := petRepo.Create(ctx, pet)
+	_, err = petRepo.Create(ctx, mockPet)
+	pets, err := petService.GetFromCity(ctx, "João Pessoa")
+	require.NoError(t, err, "error when getting pets from city")
+	assert.Equal(t, pet.Name, pets[0].Name, "pet name should be the same")
+	assert.Equal(t, 1, len(pets), "invalid length of pets")
 }

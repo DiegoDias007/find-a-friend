@@ -29,3 +29,12 @@ func (s *PetService) Create(ctx context.Context, pet types.CreatePet) (types.Pet
 
 	return newPet, nil
 }
+
+func (s *PetService) GetFromCity(ctx context.Context, city string) ([]types.Pet, error) {
+	pets, err := s.petRepo.GetFromCity(ctx, city)
+	if err != nil {
+		return nil, err
+	}
+
+	return pets, nil
+}
