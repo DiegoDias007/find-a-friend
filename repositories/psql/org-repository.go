@@ -29,6 +29,7 @@ func (r *OrgRepository) Create(ctx context.Context, org types.CreateOrg) (types.
 	if err != nil {
 		return types.Org{}, fmt.Errorf("error when creating org: %v", err)
 	}
+	defer r.db.Close(ctx)
 
 	return createdOrg, nil
 }
@@ -45,6 +46,7 @@ func (r *OrgRepository) GetById(ctx context.Context, id int) (types.Org, error) 
 	if err != nil {
 		return types.Org{}, fmt.Errorf("error when getting org by id: %v", err)
 	}
+	defer r.db.Close(ctx)
 
 	return org, nil
 }

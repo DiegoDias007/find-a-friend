@@ -4,6 +4,7 @@ import (
 	"context"
 	"find-a-friend/repositories"
 	"find-a-friend/types"
+	"find-a-friend/utils"
 )
 
 type OrgService struct {
@@ -15,6 +16,13 @@ func NewOrgService(orgRepo repositories.OrgRepository) *OrgService {
 }
 
 func (r *OrgService) Create(ctx context.Context, org types.CreateOrg) (types.Org, error) {
+	hashedPassword, err := utils.HashPassword(org.Password, 10)
+	if err != nil {
+		return types.Org{}, err
+	}
+
+	org.Password = hashedPassword
+
 	newOrg, err := r.orgRepo.Create(ctx, org)
 	if err != nil {
 		return types.Org{}, err

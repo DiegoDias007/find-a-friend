@@ -32,6 +32,7 @@ func (r *PetRepository) Create(ctx context.Context, pet types.CreatePet) (types.
 	if err != nil {
 		return types.Pet{}, fmt.Errorf("error creating pet: %v", err)
 	}
+	defer r.db.Close(ctx)
 
 	return createdPet, nil
 }
