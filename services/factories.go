@@ -1,9 +1,13 @@
 package services
 
 import (
-	"find-a-friend/repositories"
+	"find-a-friend/repositories/psql"
+
+	"github.com/jackc/pgx/v5"
 )
 
-func CreatePetService(petRepo repositories.PetRepository, orgRepo repositories.OrgRepository) *PetService {
+func MakePetService(db *pgx.Conn) *PetService {
+	petRepo := psql.NewPetRepository(db)
+	orgRepo := psql.NewOrgRepository(db)
 	return NewPetService(petRepo, orgRepo)
 }

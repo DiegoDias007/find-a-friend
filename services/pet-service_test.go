@@ -13,7 +13,7 @@ import (
 func TestCreatePet(t *testing.T) {
 	orgRepo := inMemory.NewOrgRepository()
 	petRepo := inMemory.NewPetRepository()
-	petService := CreatePetService(petRepo, orgRepo)
+	petService := NewPetService(petRepo, orgRepo)
 
 	ctx := context.Background()
 
@@ -44,7 +44,7 @@ func TestCreatePet(t *testing.T) {
 func TestCreatePetWithInvalidOrgId(t *testing.T) {
 	orgRepo := inMemory.NewOrgRepository()
 	petRepo := inMemory.NewPetRepository()
-	petService := CreatePetService(petRepo, orgRepo)
+	petService := NewPetService(petRepo, orgRepo)
 
 	ctx := context.Background()
 
@@ -65,7 +65,7 @@ func TestCreatePetWithInvalidOrgId(t *testing.T) {
 func TestGetPetsFromCity(t *testing.T) {
 	orgRepo := inMemory.NewOrgRepository()
 	petRepo := inMemory.NewPetRepository()
-	petService := CreatePetService(petRepo, orgRepo)
+	petService := NewPetService(petRepo, orgRepo)
 
 	ctx := context.Background()
 
@@ -80,7 +80,7 @@ func TestGetPetsFromCity(t *testing.T) {
 	}
 
 	mockPet := types.CreatePet{
-		Name:    "Milla",
+		Name:    "Ronaldo",
 		City:    "Recife",
 		Species: "Dog",
 		Breed:   "Shitzu",
