@@ -4,6 +4,7 @@ import (
 	"context"
 	"find-a-friend/db"
 	"find-a-friend/services"
+	"find-a-friend/services/factories"
 	"find-a-friend/types"
 	"net/http"
 
@@ -15,7 +16,7 @@ type PetController struct {
 }
 
 func NewPetController(router *gin.Engine) *PetController {
-	s := services.MakePetService(db.DB)
+	s := factories.MakePetService(db.DB)
 	c := &PetController{petService: s}
 
 	router.POST("/pet", c.CreatePet)
