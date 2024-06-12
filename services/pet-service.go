@@ -4,7 +4,6 @@ import (
 	"context"
 	"find-a-friend/repositories"
 	"find-a-friend/types"
-	"fmt"
 )
 
 type PetService struct {
@@ -24,7 +23,7 @@ func (s *PetService) Create(ctx context.Context, pet types.CreatePet) (types.Pet
 
 	newPet, err := s.petRepo.Create(ctx, pet)
 	if err != nil {
-		return types.Pet{}, fmt.Errorf("error when creating a new pet: %v", err)
+		return types.Pet{}, err
 	}
 
 	return newPet, nil
@@ -37,4 +36,13 @@ func (s *PetService) GetFromCity(ctx context.Context, city string) ([]types.Pet,
 	}
 
 	return pets, nil
+}
+
+func (s *PetService) GetById(ctx context.Context, id int) (types.Pet, error) {
+	pet, err := s.petRepo.GetById(ctx, id)
+	if err != nil {
+		return types.Pet{}, err
+	}
+
+	return pet, nil
 }

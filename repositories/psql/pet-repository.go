@@ -57,3 +57,16 @@ func (r *PetRepository) GetFromCity(context context.Context, city string) ([]typ
 	return pets, nil
 
 }
+
+func (r *PetRepository) GetById(context context.Context, id int) (types.Pet, error) {
+	var pet types.Pet
+	err := r.db.QueryRow(context, "SELECT * FROM pet WHERE id = $1", id).
+		Scan(&pet.Id, &pet.Name, &pet.City, &pet.Species, &pet.Breed, &pet.Height, &pet.Weight, pet.OrgId)
+
+	if err != nil {
+		return types.Pet{}, fmt.Errorf("error when fetching pets: %v", err)
+	}
+	defer r.db.Close(context)
+
+	return pet, nil
+}

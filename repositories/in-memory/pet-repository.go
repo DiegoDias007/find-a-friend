@@ -4,6 +4,7 @@ import (
 	"context"
 	"find-a-friend/types"
 	"find-a-friend/utils"
+	"fmt"
 )
 
 type PetRepository struct {
@@ -42,4 +43,14 @@ func (r *PetRepository) GetFromCity(ctx context.Context, city string) ([]types.P
 	}
 
 	return pets, nil
+}
+
+func (r *PetRepository) GetById(ctx context.Context, id int) (types.Pet, error) {
+	for _, pet := range r.pets {
+		if pet.Id == id {
+			return pet, nil
+		}
+	}
+
+	return types.Pet{}, fmt.Errorf("error getting pet by id, pet not found.")
 }

@@ -8,6 +8,7 @@ import (
 type PetRepository interface {
 	Create(ctx context.Context, pet types.CreatePet) (types.Pet, error)
 	GetFromCity(ctx context.Context, city string) ([]types.Pet, error)
+	GetById(ctx context.Context, id int) (types.Pet, error)
 }
 
 type OrgRepository interface {

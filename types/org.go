@@ -1,16 +1,16 @@
 package types
 
 type Org struct {
-	Id int
-	Name string
-	Address string
-	Whatsapp string
-	Password string
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Whatsapp string `json:"whatsapp"`
+	Password string `json:"password"`
 }
 
 type CreateOrg struct {
-	Name string
-	Address string
-	Whatsapp string
-	Password string
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Whatsapp string `json:"whatsapp"`
+	Password string `json:"password"`
 }

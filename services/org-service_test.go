@@ -33,6 +33,7 @@ func TestGetOrgById(t *testing.T) {
 	orgService := NewOrgService(orgRepo)
 
 	ctx := context.Background()
+	
 	org := types.CreateOrg{
 		Name:     "We love Pets",
 		Address:  "John Doe, 500, João Pessoa",
