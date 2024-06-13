@@ -30,6 +30,7 @@ func CreateTables() error {
 		name TEXT NOT NULL,
 		address TEXT NOT NULL,
 		whatsapp TEXT NOT NULL UNIQUE,
+		email TEXT NOT NULL UNIQUE
 		password TEXT NOT NULL
 	)
 	`

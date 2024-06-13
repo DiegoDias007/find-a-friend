@@ -25,7 +25,7 @@ func (r *OrgRepository) Create(ctx context.Context, org types.CreateOrg) (types.
 	`
 
 	err := r.db.QueryRow(ctx, query, org.Name, org.Address, org.Whatsapp, org.Password).
-				Scan(&createdOrg.Id, &createdOrg.Name, &createdOrg.Address, &org.Whatsapp, &org.Password)
+		Scan(&createdOrg.Id, &createdOrg.Name, &createdOrg.Address, &createdOrg.Whatsapp, &createdOrg.Password)
 	if err != nil {
 		return types.Org{}, fmt.Errorf("error when creating org: %v", err)
 	}
@@ -34,15 +34,33 @@ func (r *OrgRepository) Create(ctx context.Context, org types.CreateOrg) (types.
 	return createdOrg, nil
 }
 
-func (r *OrgRepository) GetById(ctx context.Context, id int) (types.Org, error) {
+func (r *OrgRepository) GetByEmail(ctx context.Context, email string) (types.Org, error) {
 	var org types.Org
-	
+
 	query := `
-		SELECT * FROM org WHERE id = $1
-		RETURNING id, name, address, whatsapp, password
+		SELECT * FROM org WHERE email = $1
+		RETURNING id, name, address, whatsapp, email, password
 	`
 
-	err := r.db.QueryRow(ctx, query, id).Scan(&org.Id, &org.Name, &org.Address, &org.Whatsapp, &org.Password)
+	err := r.db.QueryRow(ctx, query, email).Scan(&org.Id, &org.Name, &org.Address, &org.Whatsapp, &org.Email, &org.Password)
+	if err != nil {
+		return types.Org{}, fmt.Errorf("error getting org by email: %v", err)
+	}
+
+	defer r.db.Close(ctx)
+
+	return org, nil
+}
+
+func (r *OrgRepository) GetById(ctx context.Context, id int) (types.Org, error) {
+	var org types.Org
+
+	query := `
+		SELECT * FROM org WHERE id = $1
+		RETURNING id, name, address, whatsapp, email, password
+	`
+
+	err := r.db.QueryRow(ctx, query, id).Scan(&org.Id, &org.Name, &org.Address, &org.Whatsapp, &org.Email, &org.Password)
 	if err != nil {
 		return types.Org{}, fmt.Errorf("error when getting org by id: %v", err)
 	}

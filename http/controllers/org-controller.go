@@ -21,7 +21,6 @@ func NewOrgController(router *gin.Engine) *OrgControler {
 	c := &OrgControler{orgService: s}
 
 	router.POST("/org/create", c.Create)
-	// TODO: add login and create token
 	router.GET("/org/:id", c.GetById)
 
 	return c
@@ -35,13 +34,30 @@ func (c *OrgControler) Create(ctx *gin.Context) {
 		return
 	}
 
-	createdOrg, err := c.orgService.Create(context.Background(), org)
+	token, err := c.orgService.Create(context.Background(), org)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "error creating org: " + err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "org created", "org": createdOrg})
+	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "token": token})
+}
+
+func (c *OrgControler) Login(ctx *gin.Context) {
+	var credentials types.LoginOrg
+	err := ctx.ShouldBindJSON(&credentials)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error parsing data: " + err.Error()})
+		return
+	}
+
+	token, err := c.orgService.Login(context.Background(), credentials.Email, credentials.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials."})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "token": token})
 }
 
 func (c *OrgControler) GetById(ctx *gin.Context) {
@@ -57,5 +73,5 @@ func (c *OrgControler) GetById(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "org found", "org": org})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "org": org})
 }

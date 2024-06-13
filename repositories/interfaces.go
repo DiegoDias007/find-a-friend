@@ -13,5 +13,6 @@ type PetRepository interface {
 
 type OrgRepository interface {
 	Create(ctx context.Context, org types.CreateOrg) (types.Org, error)
+	GetByEmail(ctx context.Context, email string) (types.Org, error)
 	GetById(ctx context.Context, id int) (types.Org, error)
 }
