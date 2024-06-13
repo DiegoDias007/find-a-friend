@@ -15,10 +15,12 @@ var err error
 func ConnectDb() error {
 	utils.LoadEnv()
 	databaseURL := os.Getenv("DATABASE_URL")
-	DB, err = pgx.Connect(context.Background(), databaseURL)
+	ctx := context.Background()
+	DB, err = pgx.Connect(ctx, databaseURL)
 	if err != nil {
 		return fmt.Errorf("error when connecting to the database: %v", err)
 	}
+	defer DB.Close(ctx)
 	fmt.Println("Connected to the database.")
 	return nil
 }
@@ -30,7 +32,7 @@ func CreateTables() error {
 		name TEXT NOT NULL,
 		address TEXT NOT NULL,
 		whatsapp TEXT NOT NULL UNIQUE,
-		email TEXT NOT NULL UNIQUE
+		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
 	)
 	`
@@ -59,10 +61,4 @@ func CreateTables() error {
 	}
 
 	return nil
-}
-
-func CloseDb() {
-	if DB != nil {
-		DB.Close(context.Background())
-	}
 }

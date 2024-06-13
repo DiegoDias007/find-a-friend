@@ -21,6 +21,7 @@ func NewOrgController(router *gin.Engine) *OrgControler {
 	c := &OrgControler{orgService: s}
 
 	router.POST("/org/create", c.Create)
+	router.POST("/org/login", c.Login)
 	router.GET("/org/:id", c.GetById)
 
 	return c
