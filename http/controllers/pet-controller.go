@@ -45,21 +45,42 @@ func (c *PetController) Create(ctx *gin.Context) {
 }
 
 func (c *PetController) GetFromCity(ctx *gin.Context) {
-	var city string
-	err := ctx.ShouldBindJSON(&city)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error parsing data: " + err.Error()})
+	city := ctx.Query("city")
+	if city == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "city is required"})
 		return
 	}
 
-	pet, err := c.petService.GetFromCity(context.Background(), city)
+	filter := types.PetFilter{City: city}
+
+	if species := ctx.Query("species"); species != "" {
+		filter.Species = &species
+	}
+	if breed := ctx.Query("breed"); breed != "" {
+		filter.Breed = &breed
+	}
+	if height := ctx.Query("height"); height != "" {
+		heightInt, err := utils.ConvertStringToFloat(height)
+		if err == nil {
+			filter.Height = &heightInt
+		}
+	}
+	if weight := ctx.Query("weight"); weight != "" {
+		weightInt, err := utils.ConvertStringToFloat(weight)
+		if err == nil {
+			filter.Weight = &weightInt
+		}
+	}
+
+	pets, err := c.petService.GetFromCity(context.Background(), filter)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error getting pet: " + err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "error getting pets: " + err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "pet": pet})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "pets": pets})
 }
+
 
 func (c *PetController) GetById(ctx *gin.Context) {
 	id := ctx.Param("id")

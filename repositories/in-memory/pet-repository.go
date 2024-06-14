@@ -15,7 +15,7 @@ func NewPetRepository() *PetRepository {
 	return &PetRepository{}
 }
 
-func (r *PetRepository) Create(ctx context.Context,pet types.CreatePet) (types.Pet, error) {
+func (r *PetRepository) Create(ctx context.Context, pet types.CreatePet) (types.Pet, error) {
 	id := utils.GenerateRandomNumber(1000)
 
 	newPet := types.Pet{
@@ -34,10 +34,22 @@ func (r *PetRepository) Create(ctx context.Context,pet types.CreatePet) (types.P
 	return newPet, nil
 }
 
-func (r *PetRepository) GetFromCity(ctx context.Context, city string) ([]types.Pet, error) {
+func (r *PetRepository) GetFromCity(ctx context.Context, filter types.PetFilter) ([]types.Pet, error) {
 	var pets []types.Pet
 	for _, pet := range r.pets {
-		if pet.City == city {
+		if pet.City == filter.City {
+			if filter.Species != nil && *filter.Species != pet.Species {
+				continue
+			}
+			if filter.Breed != nil && *filter.Breed != pet.Breed {
+				continue
+			}
+			if filter.Height != nil && *filter.Height > pet.Height {
+				continue
+			}
+			if filter.Weight != nil && *filter.Weight > pet.Weight {
+				continue
+			}
 			pets = append(pets, pet)
 		}
 	}
@@ -52,5 +64,5 @@ func (r *PetRepository) GetById(ctx context.Context, id int) (types.Pet, error) 
 		}
 	}
 
-	return types.Pet{}, fmt.Errorf("error getting pet by id, pet not found.")
+	return types.Pet{}, fmt.Errorf("error getting pet by id, pet not found")
 }

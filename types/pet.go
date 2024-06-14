@@ -20,3 +20,11 @@ type CreatePet struct {
 	Weight  float64 `json:"weight"`
 	OrgId   int     `json:"org_id"`
 }
+
+type PetFilter struct {
+	City    string  `json:"city"`
+	Species *string `json:"species,omitempty"`
+	Breed   *string `json:"breed,omitempty"`
+	Height  *float64    `json:"height,omitempty"`
+	Weight  *float64   `json:"weight,omitempty"`
+}

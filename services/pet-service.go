@@ -29,8 +29,8 @@ func (s *PetService) Create(ctx context.Context, pet types.CreatePet) (types.Pet
 	return newPet, nil
 }
 
-func (s *PetService) GetFromCity(ctx context.Context, city string) ([]types.Pet, error) {
-	pets, err := s.petRepo.GetFromCity(ctx, city)
+func (s *PetService) GetFromCity(ctx context.Context, filter types.PetFilter) ([]types.Pet, error) {
+	pets, err := s.petRepo.GetFromCity(ctx, filter)
 	if err != nil {
 		return nil, err
 	}

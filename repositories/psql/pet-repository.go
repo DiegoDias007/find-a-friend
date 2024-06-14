@@ -37,12 +37,37 @@ func (r *PetRepository) Create(ctx context.Context, pet types.CreatePet) (types.
 	return createdPet, nil
 }
 
-func (r *PetRepository) GetFromCity(context context.Context, city string) ([]types.Pet, error) {
-	rows, err := r.db.Query(context, "SELECT * FROM pet WHERE city = $1", city)
+func (r *PetRepository) GetFromCity(ctx context.Context, filter types.PetFilter) ([]types.Pet, error) {
+	query := "SELECT * FROM pet WHERE city = $1"
+	args := []interface{}{filter.City}
+	argIdx := 2
+
+	if filter.Species != nil {
+		query += fmt.Sprintf(" AND species = $%d", argIdx)
+		args = append(args, *filter.Species)
+		argIdx++
+	}
+	if filter.Breed != nil {
+		query += fmt.Sprintf(" AND breed = $%d", argIdx)
+		args = append(args, *filter.Breed)
+		argIdx++
+	}
+	if filter.Height != nil {
+		query += fmt.Sprintf(" AND height >= $%d", argIdx)
+		args = append(args, *filter.Height)
+		argIdx++
+	}
+	if filter.Weight != nil {
+		query += fmt.Sprintf(" AND weight >= $%d", argIdx)
+		args = append(args, *filter.Weight)
+		argIdx++
+	}
+
+	rows, err := r.db.Query(ctx, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("error when fetching pets: %v", err)
 	}
-	defer r.db.Close(context)
+	defer rows.Close()
 
 	var pets []types.Pet
 	for rows.Next() {
@@ -55,8 +80,8 @@ func (r *PetRepository) GetFromCity(context context.Context, city string) ([]typ
 	}
 
 	return pets, nil
-
 }
+
 
 func (r *PetRepository) GetById(context context.Context, id int) (types.Pet, error) {
 	var pet types.Pet
