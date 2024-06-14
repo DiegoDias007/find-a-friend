@@ -81,7 +81,6 @@ func (c *PetController) GetFromCity(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "pets": pets})
 }
 
-
 func (c *PetController) GetById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	intId, err := utils.ConvertStringToInt(id)

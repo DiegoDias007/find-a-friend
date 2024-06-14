@@ -12,20 +12,18 @@ import (
 var DB *pgx.Conn
 var err error
 
-func ConnectDb() error {
+func ConnectDb(ctx context.Context) error {
 	utils.LoadEnv()
 	databaseURL := os.Getenv("DATABASE_URL")
-	ctx := context.Background()
 	DB, err = pgx.Connect(ctx, databaseURL)
 	if err != nil {
 		return fmt.Errorf("error when connecting to the database: %v", err)
 	}
-	defer DB.Close(ctx)
 	fmt.Println("Connected to the database.")
 	return nil
 }
 
-func CreateTables() error {
+func CreateTables(ctx context.Context) error {
 	createOrgTable := `
 	CREATE TABLE IF NOT EXISTS org (
 		id SERIAL PRIMARY KEY NOT NULL,
@@ -36,7 +34,7 @@ func CreateTables() error {
 		password TEXT NOT NULL
 	)
 	`
-	_, err = DB.Exec(context.Background(), createOrgTable)
+	_, err = DB.Exec(ctx, createOrgTable)
 	if err != nil {
 		return fmt.Errorf("error when creating org table: %v", err.Error())
 	}
@@ -55,7 +53,7 @@ func CreateTables() error {
 		)
 	`
 
-	_, err := DB.Exec(context.Background(), createPetTable)
+	_, err := DB.Exec(ctx, createPetTable)
 	if err != nil {
 		return fmt.Errorf("error when creating pet table: %v", err.Error())
 	}

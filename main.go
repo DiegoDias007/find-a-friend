@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"find-a-friend/db"
 	"find-a-friend/http/controllers"
 	"log"
@@ -9,12 +10,15 @@ import (
 )
 
 func main() {
-	err := db.ConnectDb()
+
+	ctx := context.Background()
+
+	err := db.ConnectDb(ctx)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	err = db.CreateTables()
+	err = db.CreateTables(ctx)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -28,4 +32,5 @@ func main() {
 	if err = router.Run(); err != nil {
 		log.Fatalf("error starting server: %v", err)
 	}
+
 }
